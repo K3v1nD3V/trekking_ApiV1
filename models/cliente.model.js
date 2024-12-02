@@ -1,9 +1,9 @@
 const sql = require('mssql');
 const pool = require("../config/db");
 
-class Guia {
-  constructor(id_guia, nombre, apellido, correo, telefono) {
-    this.id_guia = id_guia;
+class Cliente {
+  constructor(id_cliente, nombre, apellido, correo, telefono) {
+    this.id_cliente = id_cliente;
     this.nombre = nombre;
     this.apellido = apellido;
     this.correo = correo;
@@ -11,12 +11,12 @@ class Guia {
   }
 
   static get tableName() {
-    return 'guias';
+    return 'clientes';
   }
 
   static get columns() {
     return [
-      'id_guia',
+      'id_cliente',
       'nombre',
       'apellido',
       'correo',
@@ -35,10 +35,10 @@ class Guia {
   }
 
   static async findById(id) {
-    const query = `SELECT * FROM ${this.tableName} WHERE id_guia = @id_guia`;
+    const query = `SELECT * FROM ${this.tableName} WHERE id_cliente = @id_cliente`;
     try {
       const result = await pool.request()
-        .input('id_guia', sql.Int, id)
+        .input('id_cliente', sql.Int, id)
         .query(query);
       return result.recordset[0];
     } catch (err) {
@@ -46,14 +46,14 @@ class Guia {
     }
   }
 
-  static async create(guia) {
+  static async create(cliente) {
     const query = `INSERT INTO ${this.tableName} (nombre, apellido, correo, telefono) VALUES (@nombre, @apellido, @correo, @telefono)`;
     try {
       const result = await pool.request()
-        .input('nombre', sql.VarChar, guia.nombre)
-        .input('apellido', sql.VarChar, guia.apellido)
-        .input('correo', sql.VarChar, guia.correo)
-        .input('telefono', sql.VarChar, guia.telefono)
+        .input('nombre', sql.VarChar, cliente.nombre)
+        .input('apellido', sql.VarChar, cliente.apellido)
+        .input('correo', sql.VarChar, cliente.correo)
+        .input('telefono', sql.VarChar, cliente.telefono)
         .query(query);
       return result;
     } catch (err) {
@@ -61,15 +61,15 @@ class Guia {
     }
   }
 
-  static async update(guia) {
-    const query = `UPDATE ${this.tableName} SET nombre = @nombre, apellido = @apellido, correo = @correo, telefono = @telefono WHERE id_guia = @id_guia`;
+  static async update(cliente) {
+    const query = `UPDATE ${this.tableName} SET nombre = @nombre, apellido = @apellido, correo = @correo, telefono = @telefono WHERE id_cliente = @id_cliente`;
     try {
       const result = await pool.request()
-        .input('id_guia', sql.Int, guia.id_guia)
-        .input('nombre', sql.VarChar, guia.nombre)
-        .input('apellido', sql.VarChar, guia.apellido)
-        .input('correo', sql.VarChar, guia.correo)
-        .input('telefono', sql.VarChar, guia.telefono)
+        .input('id_cliente', sql.Int, cliente.id_cliente)
+        .input('nombre', sql.VarChar, cliente.nombre)
+        .input('apellido', sql.VarChar, cliente.apellido)
+        .input('correo', sql.VarChar, cliente.correo)
+        .input('telefono', sql.VarChar, cliente.telefono)
         .query(query);
       return result;
     } catch (err) {
@@ -77,11 +77,11 @@ class Guia {
     }
   }
 
-  static async delete(id_guia) {
-    const query = `DELETE FROM ${this.tableName} WHERE id_guia = @id_guia`;
+  static async delete(id_cliente) {
+    const query = `DELETE FROM ${this.tableName} WHERE id_cliente = @id_cliente`;
     try {
       const result = await pool.request()
-        .input('id_guia', sql.Int, id_guia)
+        .input('id_cliente', sql.Int, id_cliente)
         .query(query);
       return result;
     } catch (err) {
@@ -90,4 +90,4 @@ class Guia {
   }
 }
 
-module.exports = Guia;
+module.exports = Cliente;

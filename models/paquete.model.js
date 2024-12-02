@@ -1,4 +1,5 @@
-const { pool } = require("../config/db");
+const sql = require('mssql');
+const pool = require("../config/db");
 
 class Paquete {
   constructor(id, nombre, valor, descripcion) {
@@ -23,41 +24,65 @@ class Paquete {
 
   static async findAll() {
     const query = `SELECT * FROM ${this.tableName}`;
-    return new Promise((resolve, reject) => {
-      pool.execute(query, (err, res) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(res)
-        }
-      });
-    })
+    try {
+      const result = await pool.request().query(query);
+      return result.recordset;
+    } catch (err) {
+      throw err;
+    }
   }
   
   static async findById(id) {
-    const query = `SELECT * FROM ${this.tableName} WHERE id = ${id}`;
-    return new Promise((resolve, reject) => {
-      pool.execute(query, (err, res) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(res)
-        }
-      });
-    })
+    const query = `SELECT * FROM ${this.tableName} WHERE id = @id`;
+    try {
+      const result = await pool.request()
+        .input('id', sql.Int, id)
+        .query(query);
+      return result.recordset[0];
+    } catch (err) {
+      throw err;
+    }
   }
 
   static async create(paquete) {
-    const query = `INSERT INTO ${this.tableName} (nombre, valor, descripcion) VALUES (?, ?, ?)`;
-    pool.execute(query, [paquete.nombre, paquete.valor, paquete.descripcion]);
+    const query = `INSERT INTO ${this.tableName} (nombre, valor, descripcion) VALUES (@nombre, @valor, @descripcion)`;
+    try {
+      const result = await pool.request()
+        .input('nombre', sql.VarChar, paquete.nombre)
+        .input('valor', sql.Decimal, paquete.valor)
+        .input('descripcion', sql.VarChar, paquete.descripcion)
+        .query(query);
+      return result;
+    } catch (err) {
+      throw err;
+    }
   }
+
   static async update(paquete) {
-    const query = `UPDATE ${this.tableName} SET nombre = ?, valor = ?, descripcion = ? WHERE id = ${paquete.id}`;
-    pool.execute(query, [paquete.nombre, paquete.valor, paquete.descripcion]);
+    const query = `UPDATE ${this.tableName} SET nombre = @nombre, valor = @valor, descripcion = @descripcion WHERE id = @id`;
+    try {
+      const result = await pool.request()
+        .input('id', sql.Int, paquete.id)
+        .input('nombre', sql.VarChar, paquete.nombre)
+        .input('valor', sql.Decimal, paquete.valor)
+        .input('descripcion', sql.VarChar, paquete.descripcion)
+        .query(query);
+      return result;
+    } catch (err) {
+      throw err;
+    }
   }
 
   static async delete(id) {
-    pool.execute(`DELETE FROM ${this.tableName} WHERE id = ?`, [id]);
+    const query = `DELETE FROM ${this.tableName} WHERE id = @id`;
+    try {
+      const result = await pool.request()
+        .input('id', sql.Int, id)
+        .query(query);
+      return result;
+    } catch (err) {
+      throw err;
+    }
   }
 }
 

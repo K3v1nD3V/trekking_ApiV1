@@ -1,24 +1,25 @@
-const mysql = require('mysql2/promise');
+const sql = require('mssql');
 
 const config = {
-    host: 'localhost',
-    database: 'trekkingv1',
-    user: 'root',
-    password: ''
+    server: process.env.DB_SERVER, 
+    database: process.env.DB_DATABASE, 
+    user: process.env.DB_USER, 
+    password: process.env.DB_PASSWORD,
+    options: {
+        encrypt: true, // Usar la conexión encriptada
+        trustServerCertificate: false, // Ajusta según tus necesidades
+        enableArithAbort: true
+    }
 };
 
-const pool = mysql.createPool(config);
+const pool = new sql.ConnectionPool(config);
 
-async function testConnection() {
-    try {
-        const connection = await pool.getConnection();
-        console.log('Conexión exitosa a la base de datos');
-        connection.release();
-    } catch (err) {
-        console.error('Error al conectar a la base de datos:', err);
+pool.connect(err => {
+    if (err) {
+        console.error('Database connection failed!', err);
+    } else {
+        console.log('Database connected successfully');
     }
-}
-
-testConnection();
+});
 
 module.exports = pool;
