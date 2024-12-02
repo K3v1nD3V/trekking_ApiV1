@@ -1,7 +1,11 @@
 const express = require('express');
 const cors = require('cors');
+require('dotenv').config(); 
 const PaqueteController = require('../controllers/paquetes.controller.js');
 const TourController = require('../controllers/tours.controller.js');
+const GuiaController = require('../controllers/guia.controller.js'); 
+const ClienteController = require('../controllers/cliente.controller.js'); 
+const ServicioController = require('../controllers/servicios.controller.js');
 
 class Server {
     constructor() {
@@ -9,12 +13,15 @@ class Server {
         this.listen();
         this.pathPaquetes = '/api/paquetes';
         this.pathTours = '/api/tours';
+        this.pathGuias = '/api/guias';
+        this.pathClientes = '/api/clientes';
+        this.pathServicios = '/api/servicios';
         this.route();
     }
 
     listen() {
-        this.app.listen(3000, () => {
-            console.log(`Server is running`);
+        this.app.listen(process.env.PORT || 3000, () => {
+            console.log(`Server is running on port ${process.env.PORT || 3000}`);
         });
     }
 
@@ -35,6 +42,27 @@ class Server {
         this.app.post(this.pathTours, TourController.createTour);
         this.app.put(this.pathTours + '/:id', TourController.updateTour);
         this.app.delete(this.pathTours + '/:id', TourController.deleteTour);
+
+        // Rutas para guías
+        this.app.get(this.pathGuias, GuiaController.getAllGuias); 
+        this.app.get(this.pathGuias + '/:id_guia', GuiaController.getGuiaById);
+        this.app.post(this.pathGuias, GuiaController.createGuia);
+        this.app.put(this.pathGuias + '/:id_guia', GuiaController.updateGuia);
+        this.app.delete(this.pathGuias + '/:id_guia', GuiaController.deleteGuia);
+
+        // Rutas para clientes
+         this.app.get(this.pathClientes, ClienteController.getAllClientes); 
+         this.app.get(this.pathClientes + '/:id_cliente', ClienteController.getClienteById);
+         this.app.post(this.pathClientes, ClienteController.createCliente);
+         this.app.put(this.pathClientes + '/:id_cliente', ClienteController.updateCliente);
+         this.app.delete(this.pathClientes + '/:id_cliente', ClienteController. deleteCliente);
+
+         // Rutas para servicios
+         this.app.get(this.pathServicios, ServicioController.getAllServicios); 
+         this.app.get(this.pathServicios + '/:id_servicio', ServicioController.getServicioById);
+         this.app.post(this.pathServicios, ServicioController.createServicio);
+         this.app.put(this.pathServicios + '/:id_servicio', ServicioController.updateServicio);
+         this.app.delete(this.pathServicios + '/:id_servicio', ServicioController.deleteServicio);
     }
 }
 

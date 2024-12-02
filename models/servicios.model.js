@@ -1,25 +1,23 @@
 const { pool } = require("../config/db");
 
-class Guia {
-  constructor(id_guia, nombre, apellido, correo, telefono) {
-    this.id_guia = id_guia;
+class Servicio {
+  constructor(id_servicio, nombre, precio, categoria) {
+    this.id_servicio = id_servicio;
     this.nombre = nombre;
-    this.apellido = apellido;
-    this.correo = correo;
-    this.telefono = telefono;
+    this.precio = precio;
+    this.categoria = categoria;
   }
 
   static get tableName() {
-    return 'guias';
+    return 'servicios';
   }
 
   static get columns() {
     return [
-      'id_guia',
+      'id_servicio',
       'nombre',
-      'apellido',
-      'correo',
-      'telefono'
+      'precio',
+      'categoria'
     ];
   }
 
@@ -37,7 +35,7 @@ class Guia {
   }
 
   static async findById(id) {
-    const query = `SELECT * FROM ${this.tableName} WHERE id_guia = ${id}`; // Corregido `id_guia` -> `id`
+    const query = `SELECT * FROM ${this.tableName} WHERE id_servicio = ${id}`; 
     return new Promise((resolve, reject) => {
       pool.execute(query, (err, res) => {
         if (err) {
@@ -49,12 +47,12 @@ class Guia {
     });
   }
 
-  static async create(guia) {
-    const query = `INSERT INTO ${this.tableName} (id_guia, nombre, apellido, correo, telefono) VALUES (?, ?, ?, ?, ?)`;
+  static async create(servicio) {
+    const query = `INSERT INTO ${this.tableName} (id_servicio, nombre, precio, categoria) VALUES (?, ?, ?, ?)`;
     return new Promise((resolve, reject) => {
       pool.execute(
         query,
-        [guia.id_guia, guia.nombre, guia.apellido, guia.correo, guia.telefono],
+        [servicio.id_servicio, servicio.nombre, servicio.precio, servicio.categoria],
         (err, res) => {
           if (err) {
             reject(err);
@@ -66,12 +64,12 @@ class Guia {
     });
   }
 
-  static async update(guia) {
-    const query = `UPDATE ${this.tableName} SET nombre = ?, apellido = ?, correo = ?, telefono = ? WHERE id_guia = ?`; // Corregido `id` -> `id_guia`
+  static async update(servicio) {
+    const query = `UPDATE ${this.tableName} SET nombre = ?, precio = ?, categoria = ? WHERE id_servicio = ?`; 
     return new Promise((resolve, reject) => {
       pool.execute(
         query,
-        [guia.nombre, guia.apellido, guia.correo, guia.telefono, guia.id_guia],
+        [servicio.nombre, servicio.precio, servicio.categoria, servicio.id_servicio],
         (err, res) => {
           if (err) {
             reject(err);
@@ -83,10 +81,10 @@ class Guia {
     });
   }
 
-  static async delete(id_guia) {
-    const query = `DELETE FROM ${this.tableName} WHERE id_guia = ?`; // Corregido clave `id` -> `id_guia`
+  static async delete(id_servicio) {
+    const query = `DELETE FROM ${this.tableName} WHERE id_servicio = ?`; 
     return new Promise((resolve, reject) => {
-      pool.execute(query, [id_guia], (err, res) => {
+      pool.execute(query, [id_servicio], (err, res) => {
         if (err) {
           reject(err);
         } else {
@@ -97,4 +95,4 @@ class Guia {
   }
 }
 
-module.exports = Guia;
+module.exports = Servicio;
