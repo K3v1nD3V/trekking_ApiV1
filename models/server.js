@@ -6,6 +6,7 @@ const TourController = require('../controllers/tours.controller.js');
 const GuiaController = require('../controllers/guia.controller.js'); 
 const ClienteController = require('../controllers/cliente.controller.js'); 
 const ServicioController = require('../controllers/servicios.controller.js');
+const CalendarioController = require('../controllers/calendario.controller.js');
 
 class Server {
     constructor() {
@@ -16,6 +17,7 @@ class Server {
         this.pathGuias = '/api/guias';
         this.pathClientes = '/api/clientes';
         this.pathServicios = '/api/servicios';
+        this.pathCalendario = '/api/calendario';
         this.route();
     }
 
@@ -63,6 +65,13 @@ class Server {
          this.app.post(this.pathServicios, ServicioController.createServicio);
          this.app.put(this.pathServicios + '/:id_servicio', ServicioController.updateServicio);
          this.app.delete(this.pathServicios + '/:id_servicio', ServicioController.deleteServicio);
+
+         // Rutas para calendario
+         this.app.get(this.pathCalendario, CalendarioController.getAllCalendarios);
+         this.app.get(this.pathCalendario + '/:id', CalendarioController.getCalendarioById);
+         this.app.post(this.pathCalendario, CalendarioController.createCalendario);
+         this.app.put(this.pathCalendario + '/:id', CalendarioController.updateCalendario);
+         this.app.delete(this.pathCalendario + '/:id', CalendarioController.deleteCalendario);
     }
 }
 
