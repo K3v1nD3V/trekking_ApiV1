@@ -2,8 +2,8 @@ const sql = require('mssql');
 const pool = require("../config/db");
 
 class Paquete {
-  constructor(id, nombre, valor, descripcion) {
-    this.id = id;
+  constructor(id_paquetes, nombre, valor, descripcion) {
+    this.id_paquetes = id_paquetes;
     this.nombre = nombre;
     this.valor = valor;
     this.descripcion = descripcion;
@@ -15,7 +15,7 @@ class Paquete {
 
   static get columns() {
     return [
-      'id',
+      'id_paquetes',
       'nombre',
       'valor',
       'descripcion',
@@ -32,11 +32,11 @@ class Paquete {
     }
   }
   
-  static async findById(id) {
-    const query = `SELECT * FROM ${this.tableName} WHERE id = @id`;
+  static async findById(id_paquetes) {
+    const query = `SELECT * FROM ${this.tableName} WHERE id_paquetes = @id_paquetes`;
     try {
       const result = await pool.request()
-        .input('id', sql.Int, id)
+        .input('id_paquetes', sql.Int, id_paquetes)
         .query(query);
       return result.recordset[0];
     } catch (err) {
@@ -52,17 +52,19 @@ class Paquete {
         .input('valor', sql.Decimal, paquete.valor)
         .input('descripcion', sql.VarChar, paquete.descripcion)
         .query(query);
-      return result;
+
+      const createdPaquete = await pool.request().query('SELECT @@IDENTITY AS id_paquetes');
+      return { id_paquetes: createdPaquete.recordset[0].id_paquetes, ...paquete };
     } catch (err) {
       throw err;
     }
   }
 
   static async update(paquete) {
-    const query = `UPDATE ${this.tableName} SET nombre = @nombre, valor = @valor, descripcion = @descripcion WHERE id = @id`;
+    const query = `UPDATE ${this.tableName} SET nombre = @nombre, valor = @valor, descripcion = @descripcion WHERE id_paquetes = @id_paquetes`;
     try {
       const result = await pool.request()
-        .input('id', sql.Int, paquete.id)
+        .input('id_paquetes', sql.Int, paquete.id_paquetes)
         .input('nombre', sql.VarChar, paquete.nombre)
         .input('valor', sql.Decimal, paquete.valor)
         .input('descripcion', sql.VarChar, paquete.descripcion)
@@ -73,11 +75,11 @@ class Paquete {
     }
   }
 
-  static async delete(id) {
-    const query = `DELETE FROM ${this.tableName} WHERE id = @id`;
+  static async delete(id_paquetes) {
+    const query = `DELETE FROM ${this.tableName} WHERE id_paquetes = @id_paquetes`;
     try {
       const result = await pool.request()
-        .input('id', sql.Int, id)
+        .input('id_paquetes', sql.Int, id_paquetes)
         .query(query);
       return result;
     } catch (err) {

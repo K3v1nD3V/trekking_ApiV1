@@ -2,9 +2,9 @@ const sql = require('mssql');
 const pool = require("../config/db");
 
 class Tour {
-  constructor(id, idPaquete, descripcion) {
-    this.id = id;
-    this.idPaquete = idPaquete;
+  constructor(id_tours, id_paquete, descripcion) {
+    this.id_tours = id_tours;
+    this.id_paquete = id_paquete;
     this.descripcion = descripcion;
   }
 
@@ -14,7 +14,7 @@ class Tour {
 
   static get columns() {
     return [
-      'id',
+      'id_tours',
       'id_paquete',
       'descripcion',
     ];
@@ -30,11 +30,11 @@ class Tour {
     }
   }
   
-  static async findById(id) {
-    const query = `SELECT * FROM ${this.tableName} WHERE id = @id`;
+  static async findById(id_tours) {
+    const query = `SELECT * FROM ${this.tableName} WHERE id_tours = @id_tours`;
     try {
       const result = await pool.request()
-        .input('id', sql.Int, id)
+        .input('id_tours', sql.Int, id_tours)
         .query(query);
       return result.recordset[0];
     } catch (err) {
@@ -46,21 +46,23 @@ class Tour {
     const query = `INSERT INTO ${this.tableName} (id_paquete, descripcion) VALUES (@id_paquete, @descripcion)`;
     try {
       const result = await pool.request()
-        .input('id_paquete', sql.Int, tour.idPaquete)
+        .input('id_paquete', sql.Int, tour.id_paquete)
         .input('descripcion', sql.VarChar, tour.descripcion)
         .query(query);
-      return result;
+
+      const createdTour = await pool.request().query('SELECT @@IDENTITY AS id_tours');
+      return { id_tours: createdTour.recordset[0].id_tours, ...tour };
     } catch (err) {
       throw err;
     }
   }
 
   static async update(tour) {
-    const query = `UPDATE ${this.tableName} SET id_paquete = @id_paquete, descripcion = @descripcion WHERE id = @id`;
+    const query = `UPDATE ${this.tableName} SET id_paquete = @id_paquete, descripcion = @descripcion WHERE id_tours = @id_tours`;
     try {
       const result = await pool.request()
-        .input('id', sql.Int, tour.id)
-        .input('id_paquete', sql.Int, tour.idPaquete)
+        .input('id_tours', sql.Int, tour.id_tours)
+        .input('id_paquete', sql.Int, tour.id_paquete)
         .input('descripcion', sql.VarChar, tour.descripcion)
         .query(query);
       return result;
@@ -69,11 +71,11 @@ class Tour {
     }
   }
 
-  static async delete(id) {
-    const query = `DELETE FROM ${this.tableName} WHERE id = @id`;
+  static async delete(id_tours) {
+    const query = `DELETE FROM ${this.tableName} WHERE id_tours = @id_tours`;
     try {
       const result = await pool.request()
-        .input('id', sql.Int, id)
+        .input('id_tours', sql.Int, id_tours)
         .query(query);
       return result;
     } catch (err) {
