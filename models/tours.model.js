@@ -2,9 +2,11 @@ const sql = require('mssql');
 const pool = require("../config/db");
 
 class Tour {
-  constructor(id_tours, id_paquete, descripcion) {
+  constructor(id_tours, nombre, duracion, costo, descripcion) {
     this.id_tours = id_tours;
-    this.id_paquete = id_paquete;
+    this.nombre = nombre;
+    this.duracion = duracion;
+    this.costo = costo;
     this.descripcion = descripcion;
   }
 
@@ -15,8 +17,10 @@ class Tour {
   static get columns() {
     return [
       'id_tours',
-      'id_paquete',
-      'descripcion',
+      'nombre',
+      'duracion',
+      'costo',
+      'descripcion'
     ];
   }
 
@@ -43,10 +47,12 @@ class Tour {
   }
 
   static async create(tour) {
-    const query = `INSERT INTO ${this.tableName} (id_paquete, descripcion) VALUES (@id_paquete, @descripcion)`;
+    const query = `INSERT INTO ${this.tableName} (nombre, duracion, costo, descripcion) VALUES (@nombre, @duracion, @costo, @descripcion)`;
     try {
       const result = await pool.request()
-        .input('id_paquete', sql.Int, tour.id_paquete)
+        .input('nombre', sql.VarChar, tour.nombre)
+        .input('duracion', sql.Int, tour.duracion)
+        .input('costo', sql.Decimal, tour.costo)
         .input('descripcion', sql.VarChar, tour.descripcion)
         .query(query);
 
@@ -58,11 +64,13 @@ class Tour {
   }
 
   static async update(tour) {
-    const query = `UPDATE ${this.tableName} SET id_paquete = @id_paquete, descripcion = @descripcion WHERE id_tours = @id_tours`;
+    const query = `UPDATE ${this.tableName} SET nombre = @nombre, duracion = @duracion, costo = @costo, descripcion = @descripcion WHERE id_tours = @id_tours`;
     try {
       const result = await pool.request()
         .input('id_tours', sql.Int, tour.id_tours)
-        .input('id_paquete', sql.Int, tour.id_paquete)
+        .input('nombre', sql.VarChar, tour.nombre)
+        .input('duracion', sql.Int, tour.duracion)
+        .input('costo', sql.Decimal, tour.costo)
         .input('descripcion', sql.VarChar, tour.descripcion)
         .query(query);
       return result;

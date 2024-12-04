@@ -24,8 +24,8 @@ class TourController {
 
   static async createTour(req, res) {
     try {
-      const { id_paquete, descripcion } = req.body;
-      const newTour = await Tour.create(new Tour(null, id_paquete, descripcion));
+      const { nombre, duracion, costo, descripcion } = req.body;
+      const newTour = await Tour.create(new Tour(null, nombre, duracion, costo, descripcion));
       res.status(201).json({ message: 'Tour creado correctamente', tour: newTour });
     } catch (error) {
       console.error(error);
@@ -35,10 +35,10 @@ class TourController {
 
   static async updateTour(req, res) {
     try {
-      const { id_paquete, descripcion } = req.body;
+      const { nombre, duracion, costo, descripcion } = req.body;
       const id_tours = req.params.id;
       
-      await Tour.update(new Tour(id_tours, id_paquete, descripcion));
+      await Tour.update(new Tour(id_tours, nombre, duracion, costo, descripcion));
       
       res.status(200).json({ message: 'Tour actualizado correctamente' });
     } catch (error) {
