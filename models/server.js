@@ -7,17 +7,22 @@ const GuiaController = require('../controllers/guia.controller.js');
 const ClienteController = require('../controllers/cliente.controller.js'); 
 const ServicioController = require('../controllers/servicios.controller.js');
 const CalendarioController = require('../controllers/calendario.controller.js');
+const UsuarioController = require('../controllers/usuario.controller.js'); 
 
 class Server {
     constructor() {
         this.app = express();
         this.listen();
+
+        // Definición de paths
         this.pathPaquetes = '/api/paquetes';
         this.pathTours = '/api/tours';
         this.pathGuias = '/api/guias';
         this.pathClientes = '/api/clientes';
         this.pathServicios = '/api/servicios';
         this.pathCalendario = '/api/calendario';
+        this.pathUsuarios = '/api/usuarios'; 
+
         this.route();
     }
 
@@ -53,25 +58,32 @@ class Server {
         this.app.delete(this.pathGuias + '/:id_guia', GuiaController.deleteGuia);
 
         // Rutas para clientes
-         this.app.get(this.pathClientes, ClienteController.getAllClientes); 
-         this.app.get(this.pathClientes + '/:id_cliente', ClienteController.getClienteById);
-         this.app.post(this.pathClientes, ClienteController.createCliente);
-         this.app.put(this.pathClientes + '/:id_cliente', ClienteController.updateCliente);
-         this.app.delete(this.pathClientes + '/:id_cliente', ClienteController. deleteCliente);
+        this.app.get(this.pathClientes, ClienteController.getAllClientes); 
+        this.app.get(this.pathClientes + '/:id_cliente', ClienteController.getClienteById);
+        this.app.post(this.pathClientes, ClienteController.createCliente);
+        this.app.put(this.pathClientes + '/:id_cliente', ClienteController.updateCliente);
+        this.app.delete(this.pathClientes + '/:id_cliente', ClienteController.deleteCliente);
 
-         // Rutas para servicios
-         this.app.get(this.pathServicios, ServicioController.getAllServicios); 
-         this.app.get(this.pathServicios + '/:id_servicio', ServicioController.getServicioById);
-         this.app.post(this.pathServicios, ServicioController.createServicio);
-         this.app.put(this.pathServicios + '/:id_servicio', ServicioController.updateServicio);
-         this.app.delete(this.pathServicios + '/:id_servicio', ServicioController.deleteServicio);
+        // Rutas para servicios
+        this.app.get(this.pathServicios, ServicioController.getAllServicios); 
+        this.app.get(this.pathServicios + '/:id_servicio', ServicioController.getServicioById);
+        this.app.post(this.pathServicios, ServicioController.createServicio);
+        this.app.put(this.pathServicios + '/:id_servicio', ServicioController.updateServicio);
+        this.app.delete(this.pathServicios + '/:id_servicio', ServicioController.deleteServicio);
 
-         // Rutas para calendario
-         this.app.get(this.pathCalendario, CalendarioController.getAllCalendarios);
-         this.app.get(this.pathCalendario + '/:id', CalendarioController.getCalendarioById);
-         this.app.post(this.pathCalendario, CalendarioController.createCalendario);
-         this.app.put(this.pathCalendario + '/:id', CalendarioController.updateCalendario);
-         this.app.delete(this.pathCalendario + '/:id', CalendarioController.deleteCalendario);
+        // Rutas para calendario
+        this.app.get(this.pathCalendario, CalendarioController.getAllCalendarios);
+        this.app.get(this.pathCalendario + '/:id', CalendarioController.getCalendarioById);
+        this.app.post(this.pathCalendario, CalendarioController.createCalendario);
+        this.app.put(this.pathCalendario + '/:id', CalendarioController.updateCalendario);
+        this.app.delete(this.pathCalendario + '/:id', CalendarioController.deleteCalendario);
+
+        // Rutas para usuarios
+        this.app.get(this.pathUsuarios, UsuarioController.getAllUsuarios);
+        this.app.get(this.pathUsuarios + '/:id_usuario', UsuarioController.getUsuarioById);
+        this.app.post(this.pathUsuarios, UsuarioController.createUsuario);
+        this.app.put(this.pathUsuarios + '/:id_usuario', UsuarioController.updateUsuario);
+        this.app.delete(this.pathUsuarios + '/:id_usuario', UsuarioController.deleteUsuario);
     }
 }
 
